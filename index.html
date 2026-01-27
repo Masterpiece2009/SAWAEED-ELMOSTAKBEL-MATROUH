@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل طلاب - مركز سواعد المستقبل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-orange: #F58220; /* From Logo */
+            --primary-black: #000000;
+            --text-grey: #4a4a4a;
+            --bg-light: #f4f7f6;
+            --white: #ffffff;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--primary-black);
+            overflow-x: hidden;
+        }
+
+        /* --- LOADER ANIMATION --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .loader-content {
+            text-align: center;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .loader-logo {
+            width: 150px;
+            margin-bottom: 20px;
+            /* Placeholder animation for "drawing" effect */
+            filter: drop-shadow(0 0 0 transparent);
+            animation: scaleIn 1s ease-out forwards;
+        }
+
+        .loader-slogan {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* --- MAIN FORM --- */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            opacity: 0; /* Hidden initially */
+            animation: slideUp 0.8s ease-out 1.5s forwards;
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            color: var(--primary-black);
+            font-weight: 800;
+        }
+
+        .header p {
+            color: var(--text-grey);
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 25px;
+            border-top: 5px solid var(--primary-orange);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-title i {
+            margin-left: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background: var(--white);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Subject Section */
+        .subject-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 40px;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 500px) {
+            .subject-row { grid-template-columns: 1fr; position: relative; padding-top: 30px; }
+            .remove-btn { position: absolute; top: 5px; left: 5px; }
+        }
+
+        .btn-add {
+            background: transparent;
+            border: 2px dashed var(--primary-orange);
+            color: var(--primary-orange);
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #fff4e6;
+        }
+
+        .remove-btn {
+            background: #ffebeb;
+            color: var(--error);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover { background: var(--error); color: white; }
+
+        /* Submit Button */
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-orange), #d96e11);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(245, 130, 32, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 130, 32, 0.6);
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--primary-black);
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .contact-item i { color: var(--primary-orange); }
+
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="./image_405f91.jpg" alt="سواعد المستقبل" class="loader-logo">
+            <div class="loader-slogan">جيل جديد .. فكر جديد</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <img src="./image_405f91.jpg" alt="Logo">
+            <h1>استمارة تسجيل الطالب</h1>
+            <p>مركز سواعد المستقبل التعليمي</p>
+        </div>
+
+        <form id="regForm">
+            <div class="card">
+                <div class="section-title">
+                    <i class="fas fa-user-graduate"></i>
+                    البيانات الشخصية
+                </div>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>اسم الطالب (ثلاثي)</label>
+                        <input type="text" id="studentName" placeholder="محمد أحمد محمود" required>
+                        <div class="error-message" id="error-studentName">يرجى إدخال اسم ثلاثي صحيح باللغة العربية</div>
+                    </div>
+                    <div class="input-group">
+                        <label>رقم الطالب (واتساب)</label>
+                        <input type="tel" id="studentPhone" placeholder="01xxxxxxxxx" maxlength="11" required>
+                        <div class="error-message" id="error-studentPhone">رقم غير صحيح (يجب أن يبدأ بـ 01 ويتكون من 11 رقم)</div>
+                    </div>
+                    <div class="input-group">
+                        <label>اسم ولي الأمر</label>
+                        <input type="text" id="parentName" placeholder="أحمد محمود..." required>
+                        <div class="error-message">يرجى إدخال الاسم</div>
+                    </div>
+                    <div class="input-group">
+                        <label>رقم ولي الأمر</label>
+                        <input type="tel" id="parentPhone" placeholder="01xxxxxxxxx" maxlength="11" required>
+                        <div class="error-message" id="error-parentPhone">رقم غير صحيح</div>
+                    </div>
+                    <div class="input-group">
+                        <label>المرحلة الدراسية</label>
+                        <select id="stage" required onchange="updateYears()">
+                            <option value="" disabled selected>اختر المرحلة</option>
+                            <option value="الابتدائية">الابتدائية</option>
+                            <option value="الإعدادية">الإعدادية</option>
+                            <option value="الثانوية">الثانوية</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>السنة الدراسية</label>
+                        <select id="year" required>
+                            <option value="" disabled selected>اختر السنة</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title">
+                    <i class="fas fa-book-open"></i>
+                    المواد المختارة
+                </div>
+                <div id="subjectsContainer">
+                    <div class="subject-row">
+                        <input type="text" class="subject-name" placeholder="اسم المادة (مثال: رياضيات)" required>
+                        <input type="text" class="teacher-name" placeholder="اسم المدرس" required>
+                        <button type="button" class="remove-btn" onclick="removeRow(this)" style="visibility: hidden"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" onclick="addSubjectRow()">+ إضافة مادة أخرى</button>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> إرسال التسجيل
+            </button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>إمام مستشفى عرابى , Marsa Matruh, Egypt</span>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <span>+2010 60653736</span>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <span>+2010 34565872</span>
+            </div>
+        </div>
+        <p style="font-size: 0.8rem; opacity: 0.7;">جميع الحقوق محفوظة - مركز سواعد المستقبل © 2024</p>
+    </div>
+
+    <script>
+        // --- 1. LOADER LOGIC ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }, 2500); // 2.5 seconds intro
+        });
+
+        // --- 2. DYNAMIC YEARS LOGIC ---
+        function updateYears() {
+            const stage = document.getElementById('stage').value;
+            const yearSelect = document.getElementById('year');
+            yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
+            
+            let options = [];
+            if(stage === 'الابتدائية') options = ['الصف الرابع', 'الصف الخامس', 'الصف السادس'];
+            else if(stage === 'الإعدادية') options = ['الصف الأول الإعدادي', 'الصف الثاني الإعدادي', 'الصف الثالث الإعدادي'];
+            else if(stage === 'الثانوية') options = ['الصف الأول الثانوي', 'الصف الثاني الثانوي', 'الصف الثالث الثانوي'];
+
+            options.forEach(opt => {
+                let option = document.createElement('option');
+                option.text = opt;
+                option.value = opt;
+                yearSelect.add(option);
+            });
+        }
+
+        // --- 3. SUBJECT ROWS LOGIC ---
+        function addSubjectRow() {
+            const container = document.getElementById('subjectsContainer');
+            const div = document.createElement('div');
+            div.className = 'subject-row';
+            div.innerHTML = `
+                <input type="text" class="subject-name" placeholder="اسم المادة" required>
+                <input type="text" class="teacher-name" placeholder="اسم المدرس" required>
+                <button type="button" class="remove-btn" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeRow(btn) {
+            btn.parentElement.remove();
+        }
+
+        // --- 4. VALIDATION LOGIC ---
+        function validatePhone(phone) {
+            const regex = /^01[0125][0-9]{8}$/;
+            return regex.test(phone);
+        }
+
+        function validateText(text) {
+            // Check if text contains at least 2 words (rough check for full name)
+            return text.trim().indexOf(' ') != -1 && text.length > 5;
+        }
+
+        // --- 5. FORM SUBMISSION TO GOOGLE SHEET ---
+        
+        // PASTE YOUR GOOGLE SCRIPT URL HERE AFTER DEPLOYMENT
+        const SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE'; 
+
+        const form = document.getElementById('regForm');
+        
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            
+            // Data Gathering
+            const studentName = document.getElementById('studentName').value;
+            const studentPhone = document.getElementById('studentPhone').value;
+            const parentName = document.getElementById('parentName').value;
+            const parentPhone = document.getElementById('parentPhone').value;
+            const stage = document.getElementById('stage').value;
+            const year = document.getElementById('year').value;
+
+            // Validation Check
+            let isValid = true;
+
+            if(!validatePhone(studentPhone)) {
+                document.getElementById('error-studentPhone').style.display = 'block';
+                isValid = false;
+            }
+            if(!validatePhone(parentPhone)) {
+                document.getElementById('error-parentPhone').style.display = 'block';
+                isValid = false;
+            }
+            if(!validateText(studentName)) {
+                document.getElementById('error-studentName').style.display = 'block';
+                isValid = false;
+            }
+
+            if(!isValid) return;
+
+            // Collect Subjects
+            const subjectRows = document.querySelectorAll('.subject-row');
+            let subjectsData = [];
+            subjectRows.forEach(row => {
+                const sub = row.querySelector('.subject-name').value;
+                const teach = row.querySelector('.teacher-name').value;
+                if(sub && teach) {
+                    subjectsData.push(`${sub} (${teach})`);
+                }
+            });
+
+            // Prepare Data for Sending
+            const formData = new FormData();
+            formData.append('timestamp', new Date().toLocaleString());
+            formData.append('studentName', studentName);
+            formData.append('studentPhone', studentPhone);
+            formData.append('parentName', parentName);
+            formData.append('parentPhone', parentPhone);
+            formData.append('stage', stage);
+            formData.append('year', year);
+            formData.append('subjects', subjectsData.join(' | ')); // Combine subjects into one string
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            btn.disabled = true;
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                alert("تم التسجيل بنجاح! شكراً لك.");
+                form.reset();
+                // Reset Subject rows
+                document.getElementById('subjectsContainer').innerHTML = `
+                    <div class="subject-row">
+                        <input type="text" class="subject-name" placeholder="اسم المادة (مثال: رياضيات)" required>
+                        <input type="text" class="teacher-name" placeholder="اسم المدرس" required>
+                        <button type="button" class="remove-btn" onclick="removeRow(this)" style="visibility: hidden"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.");
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
