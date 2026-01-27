@@ -755,33 +755,4 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner spinner"></i> جاري الإرسال...';
 
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-                alert('✅ تم التسجيل بنجاح! شكراً لك');
-                this.reset();
-                document.getElementById('subjectsContainer').innerHTML = `
-                    <div class="subject-row">
-                        <div class="input-group">
-                            <label>المادة 1</label>
-                            <input type="text" class="subject-name" placeholder="مثال: رياضيات" required>
-                        </div>
-                        <div class="input-group">
-                            <label>اسم المدرس</label>
-                            <input type="text" class="teacher-name" placeholder="أدخل اسم المدرس" required>
-                        </div>
-                        <button type="button" class="remove-btn" style="visibility: hidden;">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                subjectCount = 1;
-            } catch (err) {
-                alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>إرسال التسجيل</span>';
-            }
-        });
-    </script>
-</body>
-</html>
+        }
