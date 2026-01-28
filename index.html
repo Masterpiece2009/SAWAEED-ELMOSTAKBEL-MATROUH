@@ -120,8 +120,8 @@
         }
 
         .header-logo {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
@@ -129,12 +129,16 @@
             justify-content: center;
             margin: 0 auto 20px;
             box-shadow: 0 8px 30px rgba(245, 130, 32, 0.35);
+            position: relative;
+            overflow: hidden;
         }
 
-        .header-logo span {
-            font-size: 54px;
-            font-weight: 900;
-            color: white;
+        .header-logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            animation: floatLogo 3s ease-in-out infinite;
         }
 
         .header h1 {
@@ -185,6 +189,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
+        }
+
+        .form-grid .full-width {
+            grid-column: 1 / -1;
         }
 
         @media (max-width: 640px) {
@@ -468,6 +476,11 @@
         .spinner {
             animation: spin 1s linear infinite;
         }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
     </style>
 </head>
 <body>
@@ -485,7 +498,7 @@
     <div id="content" style="opacity: 0;">
         <header class="header">
             <div class="header-logo">
-                <span>س</span>
+                <img src="logo.jpg" alt="سواعد المستقبل">
             </div>
             <h1>استمارة تسجيل الطالب</h1>
             <p>مركز سواعد المستقبل التعليمي</p>
@@ -537,7 +550,7 @@
                             </select>
                             <span class="error-msg">يرجى اختيار السنة</span>
                         </div>
-                        <div class="input-group" id="grp-location">
+                        <div class="input-group full-width" id="grp-location">
                             <label>الموقع</label>
                             <select id="location" name="location" required>
                                 <option value="" disabled selected>اختر الموقع</option>
@@ -545,7 +558,7 @@
                                 <option value="سنتر السواعد عرابي">سنتر السواعد عرابي</option>
                             </select>
                             <span class="error-msg">يرجى اختيار الموقع</span>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
 
@@ -628,7 +641,7 @@
 
     <script>
         // === CONFIGURATION ===
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXJOGa6L80QOfAL9aF67j7RgMDB_o43AvS1eo-71NlO_mMYyLaCdtmcHjj9gwmghHdRQ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBFj3OFjonCeCUQsyrdpamuondJp5sVcLldvlKpB-FXvZGx1L-GPOwcY3-LoNHcPw03g/exec';
 
         // === LOADER ===
         window.addEventListener('load', () => {
