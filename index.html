@@ -537,6 +537,15 @@
                             </select>
                             <span class="error-msg">يرجى اختيار السنة</span>
                         </div>
+                        <div class="input-group" id="grp-location">
+                            <label>الموقع</label>
+                            <select id="location" name="location" required>
+                                <option value="" disabled selected>اختر الموقع</option>
+                                <option value="سنتر السواعد شارع الاسكندرية">سنتر السواعد شارع الاسكندرية</option>
+                                <option value="سنتر السواعد عرابي">سنتر السواعد عرابي</option>
+                            </select>
+                            <span class="error-msg">يرجى اختيار الموقع</span>
+                        </div>
                     </div>
                 </div>
 
@@ -716,6 +725,7 @@
             const parentPhone = document.getElementById('parentPhone').value;
             const stage = document.getElementById('stage').value;
             const year = document.getElementById('year').value;
+            const location = document.getElementById('location').value;
 
             let valid = true;
 
@@ -725,6 +735,7 @@
             if (!validatePhone(parentPhone)) { showError('grp-parentPhone'); valid = false; }
             if (!stage) { showError('grp-stage'); valid = false; }
             if (!year) { showError('grp-year'); valid = false; }
+            if (!location) { showError('grp-location'); valid = false; }
 
             if (!valid) {
                 alert('يرجى التحقق من البيانات المدخلة');
@@ -739,6 +750,7 @@
             formData.append('parentPhone', parentPhone);
             formData.append('stage', stage);
             formData.append('year', year);
+            formData.append('location', location);
 
             // Collect subjects - each in separate column
             const rows = document.querySelectorAll('.subject-row');
